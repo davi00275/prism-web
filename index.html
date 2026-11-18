@@ -35,7 +35,7 @@ const wheels = ["et_xmlfile-2.0.0-py3-none-any.whl", "itsdangerous-2.2.0-py3-non
 
 mount({
   entrypoint: "app.py",
-  archives: [{ url: new URL("app.zip?v=79399a13b918", base).href, format: "zip" }],
+  archives: [{ url: new URL("app.zip?v=2ee117f8948e", base).href, format: "zip" }],
   requirements: [...wheels, "pyyaml"],
   // hub/web.py: 원천 파일·계산 결과·사람 입력을 브라우저 저장소(IndexedDB)에 둔다
   env: { HVA_HUB_FILES_DIR: "/data/files", HVA_HUB_DATA_DIR: "/data/cache", HVA_HUB_INPUTS_DIR: "/data/inputs" },
