@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>HVA SCM Hub</title>
+<!-- 웹 버전 (web/build.py가 만든다, docs/web.md). 파이썬 앱이 브라우저 안(stlite · Pyodide)에서 돈다.
+     회사 원천 파일은 이 사이트에 없다: 각자 '원천 파일' 화면에서 올리고, 그 브라우저에만 저장된다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.2/build/stlite.css">
+<style>
+  body { margin: 0; background: #FFFFFF; color: #1D1D1F;
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif; }
+  .boot { max-width: 520px; margin: 18vh auto 0; padding: 0 16px; }
+  .boot h1 { font-size: 1.6rem; margin: 0 0 .4rem; }
+  .boot p { color: #55555A; line-height: 1.6; margin: .2rem 0; }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="boot">
+    <h1>HVA SCM Hub</h1>
+    <p>앱 준비 중… 첫 실행은 1~2분 소요 (브라우저에 파이썬 설치).</p>
+    <p>회사 데이터는 서버로 전송되지 않습니다. 업로드한 파일은 이 브라우저에만 저장됩니다.</p>
+  </div>
+</div>
+<script type="module">
+import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.2/build/stlite.js";
+
+// GitHub Pages: 화면 주소(/저장소/inbound 등)에서 새로 고침하면 404.html(= 이 파일)이 열린다 → 첫 주소로 돌린다
+const base = new URL(".", location.href);
+if (location.pathname !== base.pathname) {
+  history.replaceState(null, "", base.pathname);
+}
+const wheels = ["et_xmlfile-2.0.0-py3-none-any.whl", "itsdangerous-2.2.0-py3-none-any.whl", "openpyxl-3.1.5-py2.py3-none-any.whl", "python_multipart-0.0.34-py3-none-any.whl", "pyxlsb-1.0.10-py2.py3-none-any.whl"].map((w) => new URL("wheels/" + w, base).href);
+
+mount({
+  entrypoint: "app.py",
+  archives: [{ url: new URL("app.zip?v=79399a13b918", base).href, format: "zip" }],
+  requirements: [...wheels, "pyyaml"],
+  // hub/web.py: 원천 파일·계산 결과·사람 입력을 브라우저 저장소(IndexedDB)에 둔다
+  env: { HVA_HUB_FILES_DIR: "/data/files", HVA_HUB_DATA_DIR: "/data/cache", HVA_HUB_INPUTS_DIR: "/data/inputs" },
+  idbfsMountpoints: ["/data"],
+}, document.getElementById("root"));
+</script>
+</body>
+</html>
